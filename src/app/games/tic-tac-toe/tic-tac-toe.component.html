@@ -1,0 +1,34 @@
+<div class="container">
+  <section class="hint" [class.visible]="isGameOver()">
+    <div *ngIf="hasWinner()">{{winner}} Won</div>
+    <div *ngIf="!hasWinner()">{{winner | uppercase}}</div>
+  </section>
+  <section>
+    <div class="board">
+      <mat-grid-list cols="3">
+        <mat-grid-tile class="cell" [style.color]="cell.color"
+          *ngFor="let cell of board.getCells(); let i=index" (click)="handleClick(i)">
+          <div class="mark">
+            {{cell.mark}}
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </section>
+
+  <section>
+    <div class="controls">
+      <button mat-icon-button *ngFor="let name of getRoleNames()" (click)="setRole(name)">
+        <div [class.active]="isRole(name)">{{name}}</div>
+      </button>
+      <button mat-icon-button (click)="set2P()">
+        <mat-icon class="icon" aria-label="two players"
+          [class.active]="huamRoles.length === 2">people</mat-icon>
+      </button>
+      <button mat-icon-button (click)="set2C()">
+        <mat-icon class="icon" aria-label="two computers"
+          [class.active]="computerRoles.length === 2">computer</mat-icon>
+      </button>
+    </div>
+  </section>
+</div>
