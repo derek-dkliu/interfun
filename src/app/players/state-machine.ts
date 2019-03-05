@@ -29,6 +29,32 @@ export abstract class StateMachine<S> {
     return this.state;
   }
 
+  getRandomMove(state: State<S>, role: Role): Move {
+    const legals: Move[] = this.getLegalMoves(state, role);
+    const rand = Math.floor(Math.random() * legals.length);
+    return legals[rand];
+  }
+
+  getRandomJointMove(state: State<S>): Move[] {
+    const randomJointMove: Move[] = [];
+    for (const role of this.getRoles()) {
+      randomJointMove.push(this.getRandomMove(state, role));
+    }
+
+    return randomJointMove;
+  }
+
+  getLegalJointMoves(state: State<S>): Move[][] {
+    const legals: Move[][] = [];
+    for (const role of this.getRoles()) {
+      legals.push(this.getLegalMoves(state, role));
+    }
+
+    const crossProduct: Move[][] = [];
+    this.crossProductLegalMoves(legals, crossProduct, []);
+    return crossProduct;
+  }
+
   getLegalJointMovesByRoleMove(state: State<S>, role: Role, move: Move): Move[][] {
     const legals: Move[][] = [];
     for (const r of this.getRoles()) {

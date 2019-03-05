@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { MinimaxPlayer } from '../../players/minimax-player';
-import { TicTacToeMachine } from './tic-tac-toe-machine';
-import { Winner, Board } from './tic-tac-toe-rule';
-import { Move } from 'src/app/players/move';
 import { timer, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { Move } from 'src/app/players/move';
+import { Winner, Board } from './tic-tac-toe-rule';
+import { TicTacToeMachine } from './tic-tac-toe-machine';
+import { MinimaxPlayer } from '../../players/minimax-player';
+import { MontecarloPlayer } from 'src/app/players/montecarlo-player';
+import { BasePlayer } from 'src/app/players/base-player';
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -15,7 +17,7 @@ export class TicTacToeComponent implements OnInit {
   public winner: string;
   public board: Board;
   public stateMachine: TicTacToeMachine;
-  public computers: MinimaxPlayer<Board>[];
+  public computers: BasePlayer<Board>[];
   public huamRoles: string[] = [Board.firstPlay];
   public computerRoles: string[] = [Board.roleNames[1]];
   private subscription: Subscription;
@@ -77,7 +79,8 @@ export class TicTacToeComponent implements OnInit {
     this.computers = [];
     for (const computerRole of this.computerRoles) {
       const stateMachine = new TicTacToeMachine(this.board, computerRole);
-      this.computers.push(new MinimaxPlayer<Board>(stateMachine));
+      // this.computers.push(new MinimaxPlayer<Board>(stateMachine));
+      this.computers.push(new MontecarloPlayer<Board>(stateMachine));
     }
 
     if (!this.isHumanTurn()) {
@@ -107,7 +110,7 @@ export class TicTacToeComponent implements OnInit {
     }
   }
 
-  private computerMove(computer: MinimaxPlayer<Board>): void {
+  private computerMove(computer: BasePlayer<Board>): void {
     if (!this.isGameOver()) {
       const move = computer.selectMove();
       this.mark(+move.getAction());

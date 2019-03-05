@@ -1,18 +1,9 @@
-import { StateMachine } from './state-machine';
 import { Move } from './move';
 import { Role } from './role';
 import { State } from './state';
+import { BasePlayer } from './base-player';
 
-export class MinimaxPlayer<S> {
-  private stateMachine: StateMachine<S>;
-
-  constructor(stateMachine: StateMachine<S>) {
-    this.stateMachine = stateMachine;
-  }
-
-  public getStateMachine(): StateMachine<S> {
-    return this.stateMachine;
-  }
+export class MinimaxPlayer<S> extends BasePlayer<S> {
 
   public selectMove(): Move {
     const legalMoves = this.stateMachine.getLegalMoves(this.stateMachine.getCurrentState(), this.stateMachine.getRole());

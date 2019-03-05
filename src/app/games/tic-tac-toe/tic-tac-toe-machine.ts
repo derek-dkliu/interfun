@@ -3,17 +3,9 @@ import { Role } from 'src/app/players/role';
 import { Move } from 'src/app/players/move';
 import { State } from 'src/app/players/state';
 import { Board, Winner } from './tic-tac-toe-rule';
+import { Utils } from 'src/app/shares/utils';
 
 export class TicTacToeMachine extends StateMachine<Board> {
-  private shuffle(moves: Move[]) {
-    for (let i = 0; i < moves.length; i++) {
-      const index = Math.floor(Math.random() * (i + 1));
-      const move = moves[i];
-      moves[i] = moves[index];
-      moves[index] = move;
-    }
-    return moves;
-  }
 
   getLegalMoves(state: State<Board>, role: Role): Move[] {
     let moves = [ Move.noop() ];  // noop only, if not this role's turn
@@ -23,8 +15,8 @@ export class TicTacToeMachine extends StateMachine<Board> {
       moves = board.getLegalMoves();
     }
 
-    // return moves;
-    return this.shuffle(moves);
+    return moves;
+    // return Utils.shuffle(moves);
   }
 
   getNextState(state: State<Board>, moves: Move[]): State<Board> {
