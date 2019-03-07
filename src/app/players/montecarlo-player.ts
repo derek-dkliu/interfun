@@ -6,9 +6,9 @@ import { BasePlayer } from './base-player';
 const LIMIT = 3;
 const PROBE = 6;
 
-export class MontecarloPlayer<S> extends BasePlayer<S> {
+export class MontecarloPlayer<S extends State> extends BasePlayer<S> {
 
-  public selectMove(): Move {
+  public selectMove(timeout: number): Move {
     const legalMoves = this.stateMachine.getLegalMoves(this.stateMachine.getCurrentState(), this.stateMachine.getRole());
     let selection = legalMoves[0];
     if (legalMoves.length > 1) {
@@ -24,7 +24,7 @@ export class MontecarloPlayer<S> extends BasePlayer<S> {
     return selection;
   }
 
-  private miniScore(state: State<S>, move: Move, role: Role, level: number): number {
+  private miniScore(state: S, move: Move, role: Role, level: number): number {
     const jointMoves = this.stateMachine.getLegalJointMovesByRoleMove(state, role, move);
     let score = Number.MAX_SAFE_INTEGER;
     for (const moves of jointMoves) {
@@ -37,7 +37,7 @@ export class MontecarloPlayer<S> extends BasePlayer<S> {
     return score;
   }
 
-  private maxScore(state: State<S>, role: Role, level: number): number {
+  private maxScore(state: S, role: Role, level: number): number {
     if (this.stateMachine.isTerminal(state)) {
       return this.stateMachine.getGoal(state, role);
     }
@@ -57,7 +57,7 @@ export class MontecarloPlayer<S> extends BasePlayer<S> {
     return score;
   }
 
-  private monteCarlo(state: State<S>, role: Role, probe: number): number {
+  private monteCarlo(state: S, role: Role, probe: number): number {
     let total = 0;
     for (let i = 0; i < probe; i++) {
       total += this.depthCharge(state, role);
@@ -65,7 +65,7 @@ export class MontecarloPlayer<S> extends BasePlayer<S> {
     return total / probe;
   }
 
-  private depthCharge(state: State<S>, role: Role): number {
+  private depthCharge(state: S, role: Role): number {
     if (this.stateMachine.isTerminal(state)) {
       return this.stateMachine.getGoal(state, role);
     }

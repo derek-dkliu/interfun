@@ -27,15 +27,17 @@ section {
   }
 }
 
-.hint {
+.banner {
   position: fixed;
-  top: 100px;
+  top: 108px;
   padding: 30px 0px;
   width: 100%;
   background: cadetblue;
   color: black;
+  display: flex;
+  justify-content: center;
   text-align: center;
-  font-size: 50px;
+  font-size: 30px;
   opacity: 0;
   z-index: 0;
   transition: opacity .3s linear;
@@ -44,9 +46,25 @@ section {
     opacity: 0.9;
     z-index: 2;
   }
+
+  .reset {
+    .icon {
+      font-size: 30px;
+      margin-top: 2px;
+      padding-left: 15px;
+      color: black;
+      &:hover {
+        cursor: pointer;
+        color: cyan;
+      }
+    }
+  }
 }
 
-.controls {
+.control-pane {
+  display: flex;
+  flex-direction: column;
+
   [mat-icon-button] {
     margin: 10px 5px;
     color: cadetblue;
@@ -57,6 +75,38 @@ section {
     }
 
     .active {
+      color: cyan;
+    }
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+  }
+
+  .player-choice {
+    display: flex;
+    justify-content: center;
+    background: white;
+    mat-form-field {
+      width: 120px;
+      height: 60px;
+      padding: 0px 5px;
+    }
+    button:disabled {
+      .icon {
+        color: grey;
+      }
+    }
+  }
+
+  .test-report {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 15px;
+    color: white;
+    span {
+      padding: 0 5px;
       color: cyan;
     }
   }

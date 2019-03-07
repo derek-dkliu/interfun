@@ -2,22 +2,22 @@ import { Role } from './role';
 import { Move } from './move';
 import { State } from './state';
 
-export abstract class StateMachine<S> {
-  protected state: State<S>;
+export abstract class StateMachine<S extends State> {
+  protected state: S;
   protected role: Role;
 
-  constructor(content: S, role: string) {
-    this.state = new State<S>(content);
+  constructor(state: S, role: string) {
+    this.state = state;
     this.role = Role.create(role);
   }
 
-  abstract getLegalMoves(state: State<S>, role: Role): Move[];
+  abstract getLegalMoves(state: S, role: Role): Move[];
 
-  abstract getNextState(state: State<S>, moves: Move[]): State<S>;
+  abstract getNextState(state: S, moves: Move[]): S;
 
-  abstract isTerminal(state: State<S>): boolean;
+  abstract isTerminal(state: S): boolean;
 
-  abstract getGoal(state: State<S>, role: Role): number;
+  abstract getGoal(state: S, role: Role): number;
 
   abstract getRoles(): Role[];
 
@@ -25,17 +25,30 @@ export abstract class StateMachine<S> {
     return this.role;
   }
 
-  getCurrentState(): State<S> {
+  getCurrentState(): S {
     return this.state;
   }
 
-  getRandomMove(state: State<S>, role: Role): Move {
+  getGoals(state: S): number[] {
+    const goals = [];
+    for (const role of this.getRoles()) {
+      goals.push(this.getGoal(state, role));
+    }
+    return goals;
+  }
+
+  getRandomNextState(state: S): S {
+    const randomJointMove: Move[] = this.getRandomJointMove(state);
+    return this.getNextState(state, randomJointMove);
+  }
+
+  getRandomMove(state: S, role: Role): Move {
     const legals: Move[] = this.getLegalMoves(state, role);
     const rand = Math.floor(Math.random() * legals.length);
     return legals[rand];
   }
 
-  getRandomJointMove(state: State<S>): Move[] {
+  getRandomJointMove(state: S): Move[] {
     const randomJointMove: Move[] = [];
     for (const role of this.getRoles()) {
       randomJointMove.push(this.getRandomMove(state, role));
@@ -44,7 +57,7 @@ export abstract class StateMachine<S> {
     return randomJointMove;
   }
 
-  getLegalJointMoves(state: State<S>): Move[][] {
+  getLegalJointMoves(state: S): Move[][] {
     const legals: Move[][] = [];
     for (const role of this.getRoles()) {
       legals.push(this.getLegalMoves(state, role));
@@ -55,7 +68,7 @@ export abstract class StateMachine<S> {
     return crossProduct;
   }
 
-  getLegalJointMovesByRoleMove(state: State<S>, role: Role, move: Move): Move[][] {
+  getLegalJointMovesByRoleMove(state: S, role: Role, move: Move): Move[][] {
     const legals: Move[][] = [];
     for (const r of this.getRoles()) {
       if (r.equals(role)) {

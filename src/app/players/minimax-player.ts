@@ -3,9 +3,9 @@ import { Role } from './role';
 import { State } from './state';
 import { BasePlayer } from './base-player';
 
-export class MinimaxPlayer<S> extends BasePlayer<S> {
+export class MinimaxPlayer<S extends State> extends BasePlayer<S> {
 
-  public selectMove(): Move {
+  public selectMove(timeout: number): Move {
     const legalMoves = this.stateMachine.getLegalMoves(this.stateMachine.getCurrentState(), this.stateMachine.getRole());
     let selection = legalMoves[0];
     if (legalMoves.length > 1) {
@@ -22,7 +22,7 @@ export class MinimaxPlayer<S> extends BasePlayer<S> {
     return selection;
   }
 
-  private miniScore(state: State<S>, move: Move, role: Role, alpha: number, beta: number): number {
+  private miniScore(state: S, move: Move, role: Role, alpha: number, beta: number): number {
     const jointMoves = this.stateMachine.getLegalJointMovesByRoleMove(state, role, move);
     for (const moves of jointMoves) {
       const nextState = this.stateMachine.getNextState(state, moves);
@@ -33,7 +33,7 @@ export class MinimaxPlayer<S> extends BasePlayer<S> {
     return beta;
   }
 
-  private maxScore(state: State<S>, role: Role, alpha: number, beta: number): number {
+  private maxScore(state: S, role: Role, alpha: number, beta: number): number {
     if (this.stateMachine.isTerminal(state)) {
       const goal = this.stateMachine.getGoal(state, role);
       return goal;

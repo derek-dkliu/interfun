@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { MatGridListModule, MatButtonModule, MatIconModule } from '@angular/material';
+import { MatGridListModule, MatButtonModule, MatIconModule,
+         MatFormFieldModule, MatInputModule, MatSelectModule,
+         MatListModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,6 +20,10 @@ import { TicTacToeComponent } from './games/tic-tac-toe/tic-tac-toe.component';
     MatGridListModule,
     MatButtonModule,
     MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatListModule,
     AppRoutingModule,
   ],
   providers: [],

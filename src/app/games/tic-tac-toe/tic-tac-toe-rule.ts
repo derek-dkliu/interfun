@@ -1,7 +1,9 @@
 import { Role } from 'src/app/players/role';
 import { Move } from 'src/app/players/move';
+import { State } from 'src/app/players/state';
 
 const MARK_COLOR = 'cyan';
+export const PLAY_TIME = 0.2;   // in seconds
 
 export enum Mark {
   X = 'X',
@@ -10,7 +12,7 @@ export enum Mark {
 }
 
 export enum Winner {
-  Tie = 'tie',
+  Tie = 'Tie',
   Empty = ''
 }
 
@@ -35,11 +37,16 @@ export class Cell {
   }
 }
 
-export class Board {
+export class Board extends State {
   public static roleNames = [Mark.X, Mark.O];
   public static firstPlay = Board.roleNames[0];
 
-  private constructor(protected cells: Cell[], protected roles: Role[], protected controller: Role) {}
+  protected cells: Cell[];
+
+  private constructor(cells: Cell[], roles: Role[], controller: Role) {
+    super(roles, controller);
+    this.cells = cells;
+  }
 
   static create(): Board {
     // setup cells
@@ -65,33 +72,18 @@ export class Board {
     return new Board(cells, this.roles, this.controller);
   }
 
-  mark(move: Move): void {
-    if (move.actionable()) {
-      const index = +move.getAction();
-      this.getCell(index).mark = this.getController().getName();
-      this.updateController();
-    }
+  hash(): string {
+    // return JSON.stringify(this.cells);
+    return this.getRepresentation();
+  }
+
+  getRepresentation(): string {
+    return this.getCells().map(cell => cell.mark).join(' | ');
   }
 
   updateController(): void {
     const index = (this.roles.findIndex(role => role.equals(this.controller)) + 1) % this.roles.length;
     this.controller = this.roles[index];
-  }
-
-  isController(role: Role): boolean {
-    return this.getController().equals(role);
-  }
-
-  getController(): Role {
-    return this.controller;
-  }
-
-  getRole(index: number): Role {
-    return this.roles[index];
-  }
-
-  getRoles(): Role[] {
-    return this.roles;
   }
 
   getLegalMoves(): Move[] {
@@ -102,6 +94,14 @@ export class Board {
       }
     }
     return moves;
+  }
+
+  mark(move: Move): void {
+    if (move.actionable()) {
+      const index = +move.getAction();
+      this.getCell(index).mark = this.getController().getName();
+      this.updateController();
+    }
   }
 
   getCell(index: number): Cell {
