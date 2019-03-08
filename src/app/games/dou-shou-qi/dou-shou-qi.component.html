@@ -1,0 +1,24 @@
+<div class="container">
+  <section>
+    <div class="banner" [class.visible]="isGameOver()">
+      <div>{{winner}} Won</div>
+      <div class="reset">
+        <mat-icon class="icon" aria-label="reset" (click)="resetGame()">refresh</mat-icon>
+      </div>
+    </div>
+    <div class="board">
+      <div class="hint">
+        <div class="title">{{getTitle()}}</div>
+        <div class="message" *ngIf="hint.length > 0">{{hint}}</div>
+      </div>
+      <mat-grid-list cols="7">
+        <mat-grid-tile class="cell" [style.backgroundColor]="cell.color" (click)="select(cell)"
+          *ngFor="let cell of board.getCells(); let i=index">
+          <div class="piece" [style.borderColor]="cell.piece.border"
+            [style.backgroundColor]="cell.piece.color" *ngIf="!cell.isEmpty()">
+            {{cell.piece.text}}
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </section>

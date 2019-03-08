@@ -1,9 +1,10 @@
 import { StateMachine } from '../../players/state-machine';
 import { Role } from 'src/app/players/role';
 import { Move } from 'src/app/players/move';
-import { Board, Winner } from './tic-tac-toe-rule';
+import { Board } from './dou-shou-qi-rule';
+import { Qi } from './dou-shou-qi-data';
 
-export class TicTacToeMachine extends StateMachine<Board> {
+export class DouShouQiMachine extends StateMachine<Board> {
 
   getLegalMoves(state: Board, role: Role): Move[] {
     return state.getLegalMoves(role);
@@ -12,7 +13,7 @@ export class TicTacToeMachine extends StateMachine<Board> {
   getNextState(state: Board, moves: Move[]): Board {
     const board = state.clone();
     for (const move of moves) {
-      board.mark(move);
+      board.takeMove(move);
     }
 
     return board;
@@ -20,15 +21,13 @@ export class TicTacToeMachine extends StateMachine<Board> {
 
   isTerminal(state: Board): boolean {
     const winner = state.getWinner();
-    return winner !== Winner.Empty;
+    return winner !== Qi.empty;
   }
 
   getGoal(state: Board, role: Role): number {
     const winner = state.getWinner();
     if (role.is(winner)) {
       return 1 + 1 / state.getRound();
-    } else if (winner === Winner.Tie) {
-      return 0.5;
     } else {
       return 0;
     }

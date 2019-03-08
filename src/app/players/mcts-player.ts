@@ -4,6 +4,7 @@ import { BasePlayer } from './base-player';
 import { MctsNode } from './mcts-node';
 
 export class MctsPlayer<S extends State> extends BasePlayer<S> {
+  private nodes = new Map<string, MctsNode<S>>();
 
   selectMove(timeout: number): Move {
     const currentState = this.stateMachine.getCurrentState();
@@ -86,8 +87,13 @@ export class MctsPlayer<S extends State> extends BasePlayer<S> {
   }
 
   makeNode(state: S, moves: Move[] = null, parent: MctsNode<S> = null): MctsNode<S> {
-    const legalJointMoves = this.stateMachine.getLegalJointMoves(state);
-    const node = new MctsNode<S>(state, moves, parent, legalJointMoves);
-    return node;
+    if (this.nodes.has(state.hash()) && moves === null && parent === null) {
+      return this.nodes.get(state.hash());
+    } else {
+      const legalJointMoves = this.stateMachine.getLegalJointMoves(state);
+      const node = new MctsNode<S>(state, moves, parent, legalJointMoves);
+      this.nodes.set(state.hash(), node);
+      return node;
+    }
   }
 }

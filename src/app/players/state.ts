@@ -2,13 +2,15 @@ import { Role } from './role';
 import { Move } from './move';
 
 export abstract class State {
-  constructor(protected roles: Role[], protected controller: Role) {}
+  constructor(protected roles: Role[], protected controller: Role, protected round: number) {}
 
   abstract clone(): State;
 
   abstract getRepresentation(): string;
 
-  abstract getLegalMoves(): Move[];
+  abstract getLegalMoves(role: Role): Move[];
+
+  abstract getWinner(): string;
 
   abstract updateController(): void;
 
@@ -32,5 +34,13 @@ export abstract class State {
 
   getRoles(): Role[] {
     return this.roles;
+  }
+
+  getRound(): number {
+    return this.round;
+  }
+
+  nextRound(): void {
+    this.round++;
   }
 }

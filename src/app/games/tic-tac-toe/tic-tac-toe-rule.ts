@@ -2,6 +2,7 @@ import { Role } from 'src/app/players/role';
 import { Move } from 'src/app/players/move';
 import { State } from 'src/app/players/state';
 
+const CELL_NUM = 9;
 const MARK_COLOR = 'cyan';
 export const PLAY_TIME = 0.2;   // in seconds
 
@@ -28,7 +29,7 @@ export class Cell {
   clone(): Cell {
     const copy = new Cell();
     copy.mark = this.mark;
-    copy.color = '';
+    copy.color = this.color;
     return copy;
   }
 
@@ -43,15 +44,15 @@ export class Board extends State {
 
   protected cells: Cell[];
 
-  private constructor(cells: Cell[], roles: Role[], controller: Role) {
-    super(roles, controller);
+  private constructor(cells: Cell[], roles: Role[], controller: Role, round: number) {
+    super(roles, controller, round);
     this.cells = cells;
   }
 
   static create(): Board {
     // setup cells
     const cells = [];
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < CELL_NUM; i++) {
       cells[i] = new Cell();
     }
 
@@ -64,12 +65,12 @@ export class Board extends State {
     // X plays first
     const controller = Role.create(this.firstPlay);
 
-    return new Board(cells, roles, controller);
+    return new Board(cells, roles, controller, 1);
   }
 
   clone(): Board {
     const cells = this.cells.map(cell => cell.clone());
-    return new Board(cells, this.roles, this.controller);
+    return new Board(cells, this.roles, this.controller, this.round);
   }
 
   hash(): string {
@@ -84,15 +85,21 @@ export class Board extends State {
   updateController(): void {
     const index = (this.roles.findIndex(role => role.equals(this.controller)) + 1) % this.roles.length;
     this.controller = this.roles[index];
+    this.nextRound();
   }
 
-  getLegalMoves(): Move[] {
+  getLegalMoves(role: Role): Move[] {
     const moves = [];
-    for (let i = 0; i < this.cells.length; i++) {
-      if (this.cells[i].isEmpty()) {
-        moves.push(Move.create(i.toString()));
+    if (this.isController(role)) {
+      for (let i = 0; i < this.cells.length; i++) {
+        if (this.cells[i].isEmpty()) {
+          moves.push(Move.create(i.toString()));
+        }
       }
+    } else {      // noop only, if not this role's turn
+      moves.push(Move.noop());
     }
+
     return moves;
   }
 
@@ -145,6 +152,16 @@ export class Board extends State {
   }
 
   isFullyMarked(): boolean {
-    return !this.cells.some(cell => cell.isEmpty());
+    return this.getEmptyCellNum() === 0;
+  }
+
+  private getEmptyCellNum(): number {
+    let count = 0;
+    for (const cell of this.cells) {
+      if (cell.isEmpty()) {
+        count++;
+      }
+    }
+    return count;
   }
 }
