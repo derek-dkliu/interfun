@@ -66,8 +66,20 @@ export class MctsNode<S extends State> {
     return this.state;
   }
 
-  getScore(): number {
-    return this.utility / this.visits;
+  getScore(policy = 'robust'): number {
+    if (policy === 'robust') {    // Most visited (robust child)
+      return this.visits;
+    } else {                      // Highest winrate (max child)
+      return this.utility / this.visits;
+    }
+  }
+
+  getVisits(): number {
+    return this.visits;
+  }
+
+  getUtility(): number {
+    return this.utility;
   }
 
   getParent(): MctsNode<S> {

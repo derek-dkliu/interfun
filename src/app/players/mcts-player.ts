@@ -15,7 +15,9 @@ export class MctsPlayer<S extends State> extends BasePlayer<S> {
     if (legalMoves.length > 1) {
       const root = this.makeNode(currentState);
 
+      let playout = 0;
       while (Date.now() < timeout) {
+        playout++;
         let goals = [];
         let node = this.select(root);
 
@@ -29,17 +31,42 @@ export class MctsPlayer<S extends State> extends BasePlayer<S> {
         this.backpropagate(node, goals);
       }
       selection = this.bestMove(root);
+      console.log('Playout:', playout);
+      this.showStats(currentState);
     }
 
     return selection;
   }
 
-  bestMove(node: MctsNode<S>): Move {
+  showStats(state: S): void {
+    const node = this.nodes.get(state.hash());
+    const stats = {
+      visits: node.getVisits(),
+      utility: node.getUtility(),
+      children: []
+    };
+    for (const child of node.getChildren()) {
+      stats.children.push({
+        move: child.getMove().getAction(),
+        visits: child.getVisits(),
+        utility: child.getUtility()
+      });
+    }
+    console.log(stats);
+  }
+
+  bestMove(node: MctsNode<S>, policy = 'robust'): Move {
+    // If there is any unexpanded child node, further performance improvement required
+    if (!node.isFullyExpanded()) {
+      throw new Error('Not enough information!');
+    }
+
     let selection = null;
     let maxScore = Number.MIN_SAFE_INTEGER;
     for (const child of node.getChildren()) {
-      if (child.getScore() > maxScore) {
-        maxScore = child.getScore();
+      const score = child.getScore(policy);
+      if (score > maxScore) {
+        maxScore = score;
         selection = child.getMove();
       }
     }
