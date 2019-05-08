@@ -119,6 +119,10 @@ export class Board extends State {
     return this.cells;
   }
 
+  getHeuristic(role: Role): number {
+    return 0;
+  }
+
   getWinner(): string {
     const lines = [
       [0, 1, 2],

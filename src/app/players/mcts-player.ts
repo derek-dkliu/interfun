@@ -105,6 +105,19 @@ export class MctsPlayer<S extends State> extends BasePlayer<S> {
     return this.simulate(newState);
   }
 
+  // simulate(node: MctsNode<S>, stateMachine: StateMachine<S>): void {
+  //   let state = node.getState();
+  //   while (!stateMachine.isTerminal(state)) {
+  //     state = stateMachine.getRandomNextState(state);
+  //   }
+  //   const goals = stateMachine.getGoals(state);
+  //   while (!node.isRoot()) {
+  //     node.updateVisits();
+  //     node.updateUtility(goals);
+  //     node = node.getParent();
+  //   }
+  // }
+
   backpropagate(node: MctsNode<S>, goals: number[]) {
     node.updateVisits();
     node.updateUtility(goals);

@@ -5,6 +5,8 @@ import { Move } from 'src/app/players/move';
 import { DouShouQiMachine } from './dou-shou-qi-machine';
 import { BasePlayer } from 'src/app/players/base-player';
 import { MctsPlayer } from 'src/app/players/mcts-player';
+import { MinimaxPlayer } from 'src/app/players/minimax-player';
+import { MontecarloPlayer } from 'src/app/players/montecarlo-player';
 
 @Component({
   selector: 'app-dou-shou-qi',
@@ -47,7 +49,7 @@ export class DouShouQiComponent implements OnInit {
     this.computers = [];
     for (const computerRole of this.computerRoles) {
       const stateMachine = new DouShouQiMachine(this.board, computerRole);
-      this.computers.push(new MctsPlayer<Board>(stateMachine));
+      this.computers.push(new MinimaxPlayer<Board>(stateMachine, 5));
     }
   }
 

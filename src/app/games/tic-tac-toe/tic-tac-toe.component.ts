@@ -124,7 +124,7 @@ export class TicTacToeComponent implements OnInit, OnDestroy {
       const stateMachine = new TicTacToeMachine(this.board, this.computerRoles[i]);
       switch (this.playerChoice[i]) {
         case this.playerOption[0].id:
-          this.computers.push(new MontecarloPlayer<Board>(stateMachine));
+          this.computers.push(new MontecarloPlayer<Board>(stateMachine, 1, 1000));
           break;
         case this.playerOption[1].id:
           this.computers.push(new MctsPlayer<Board>(stateMachine));

@@ -16,6 +16,8 @@ export abstract class State {
 
   abstract hash(): string;
 
+  abstract getHeuristic(role: Role): number;
+
   isController(role: Role): boolean {
     return this.getController().equals(role);
   }

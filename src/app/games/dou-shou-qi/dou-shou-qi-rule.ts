@@ -1,7 +1,7 @@
 import { State } from 'src/app/players/state';
 import { Role } from 'src/app/players/role';
 import { Move } from 'src/app/players/move';
-import { Qi, ROLE_NAMES, SETTINGS, ANIMALS } from './dou-shou-qi-data';
+import { Qi, ROLE_NAMES, SETTINGS, ANIMALS, WEIGHTS } from './dou-shou-qi-data';
 
 export class Piece {
   constructor(
@@ -291,6 +291,49 @@ export class Board extends State {
       moves.push(Move.noop());
     }
     return moves;
+  }
+
+  getHeuristic(role: Role): number {
+    let blackPieces = 0;
+    let whitePieces = 0;
+    for (const grid of this.getCells()) {
+      if (!grid.isEmpty()) {
+
+        if (grid.isTypeOf(Qi.white_trap) && grid.hasPieceOf(Qi.black)) {
+          if (grid.neighbors.every(g => g.isEmpty())) {
+            if (role.is(Qi.black)) {
+              blackPieces += 600;
+            } else {
+              whitePieces -= 600;
+            }
+          }
+        }
+
+        if (grid.isTypeOf(Qi.black_trap) && grid.hasPieceOf(Qi.white)) {
+          if (grid.neighbors.every(g => g.isEmpty())) {
+            if (role.is(Qi.white)) {
+              whitePieces += 600;
+            } else {
+              blackPieces -= 600;
+            }
+          }
+        }
+
+        if (grid.hasPieceOf(Qi.black)) {
+          blackPieces += WEIGHTS[grid.piece.type];
+        }
+
+        if (grid.hasPieceOf(Qi.white)) {
+          whitePieces += WEIGHTS[grid.piece.type];
+        }
+      }
+    }
+
+    if (role.is(Qi.black)) {
+      return blackPieces - whitePieces;
+    } else {
+      return whitePieces - blackPieces;
+    }
   }
 
   getWinner(): string {

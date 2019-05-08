@@ -91,3 +91,5 @@ export const ANIMALS = [
   {row: 8, col: 6, owner: Qi.black, type: Qi.lion, text: Qi.lion_text, color: Qi.black_color, border: Qi.piece_border},
   {row: 6, col: 0, owner: Qi.black, type: Qi.elephant, text: Qi.elephant_text, color: Qi.black_color, border: Qi.piece_border},
 ];
+
+export const WEIGHTS = [248, 254, 277, 312, 375, 418, 457, 514];

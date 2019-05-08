@@ -4,8 +4,8 @@ import { TicTacToeComponent } from './games/tic-tac-toe/tic-tac-toe.component';
 import { DouShouQiComponent } from './games/dou-shou-qi/dou-shou-qi.component';
 
 const routes: Routes = [
-  { path: '', component: DouShouQiComponent },
-  { path: 'tictactoe', component: TicTacToeComponent }
+  { path: 'doushouqi', component: DouShouQiComponent },
+  { path: '', component: TicTacToeComponent }
 ];
 
 @NgModule({
