@@ -4,7 +4,7 @@
       <div *ngIf="hasWinner()">{{winner}} Won</div>
       <div *ngIf="!hasWinner()">{{winner | uppercase}}</div>
       <div class="reset">
-        <mat-icon class="icon" aria-label="reset" (click)="resetGame()">refresh</mat-icon>
+        <mat-icon class="icon" aria-label="reset" (click)="resetGame()" title="Restart">refresh</mat-icon>
       </div>
     </div>
 
@@ -23,18 +23,18 @@
   <section>
     <div class="control-pane">
       <div class="controls">
-        <button mat-icon-button *ngFor="let name of getRoleNames()" (click)="setRole(name)">
+        <button mat-icon-button *ngFor="let name of getRoleNames()" (click)="setRole(name)" title="Play as {{name}}">
           <div [class.active]="isRole(name)">{{name}}</div>
         </button>
-        <button mat-icon-button (click)="set2P()">
+        <button mat-icon-button (click)="set2P()" title="Two players">
           <mat-icon class="icon" aria-label="two players"
             [class.active]="huamRoles.length === 2">people</mat-icon>
         </button>
-        <button mat-icon-button (click)="setTest()">
+        <button mat-icon-button (click)="setTest()" title="View auto play">
           <mat-icon class="icon" aria-label="test"
             [class.active]="isTestMode()">computer</mat-icon>
         </button>
-        <button mat-icon-button (click)="toggleDebug()" *ngIf="isTestMode()">
+        <button mat-icon-button (click)="toggleDebug()" *ngIf="false && isTestMode()">
           <mat-icon class="icon" aria-label="toggle debug"
             [class.active]="debug">bug_report</mat-icon>
         </button>
